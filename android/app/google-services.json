@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "682385083257",
+    "firebase_url": "https://aveti-a7050.firebaseio.com",
+    "project_id": "aveti-a7050",
+    "storage_bucket": "aveti-a7050.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682385083257:android:a7dfbd0aa9ef6edd427da8",
+        "android_client_info": {
+          "package_name": "com.aveti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682385083257-kjemv2s3g426m3ao9uve5c0pkhuoh4fa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aveti",
+            "certificate_hash": "aa1ca484d08a01ddb2ae9a6654ab219a4dd4ce86"
+          }
+        },
+        {
+          "client_id": "682385083257-4ddd2vopabk2ri3pkjp5kbqkf53hodcf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aveti",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "682385083257-3smmmb19s89tus054tgtrmg97pe9v4pk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6fBe3r3RQLTtWkGzMhSHwGvrVfCIViwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682385083257-3smmmb19s89tus054tgtrmg97pe9v4pk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682385083257:android:49d50c8954f0ba44",
+        "android_client_info": {
+          "package_name": "com.aveti.app.aveti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682385083257-rv7cq9mc9gm3kcoc25kdselvq527bunq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aveti.app.aveti",
+            "certificate_hash": "1f0dd4a8a0e31767a411fd0ac651d17f2ee1af76"
+          }
+        },
+        {
+          "client_id": "682385083257-3smmmb19s89tus054tgtrmg97pe9v4pk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6fBe3r3RQLTtWkGzMhSHwGvrVfCIViwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682385083257-3smmmb19s89tus054tgtrmg97pe9v4pk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
