@@ -188,7 +188,7 @@ export default class Content extends Component {
 
   render() {
     if (!this.state.isLoading)
-      if (this.state.element.embedURL != undefined)
+      if (this.state.element.embedURL != undefined && !this.state.element.embedURL.includes("youtube"))
         if (this.state.element.contentType == 5)
           return <VideoApp url={this.state.element.embedURL.includes("iframe") ? "https:" + this.state.element.embedURL.match(/src="([^"]+)"/m)[1]: this.state.element.embedURL}></VideoApp>;
         else return <Ppt element={this.state.element}></Ppt>;
