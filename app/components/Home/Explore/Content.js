@@ -7,6 +7,7 @@ import {
   Share,
   Dimensions,
   Alert,
+  PixelRatio,
 } from 'react-native';
 import {IGNORED_TAGS} from 'react-native-render-html/src/HTMLUtils';
 import {Text, Icon, Button} from 'native-base';
@@ -18,6 +19,7 @@ import {Placeholder, PlaceholderLine, Fade} from 'rn-placeholder';
 import VideoApp from '../../Video/Video';
 import Ppt from '../../Documents/Ppt';
 import {WebView} from 'react-native-webview';
+import YouTube from 'react-native-youtube';
 
 export default class Content extends Component {
   static navigationOptions = ({navigation}) => {
@@ -93,7 +95,7 @@ export default class Content extends Component {
     element: '',
     isLoading: true,
   };
-
+  _youTubeRef = React.createRef();
   componentDidMount() {
     let apiUrl = '';
     switch (this.props.navigation.getParam('contentType', -1)) {
@@ -136,33 +138,46 @@ export default class Content extends Component {
           else this.setState({element: res.data, isLoading: false});
           switch (this.props.navigation.getParam('contentType', -1)) {
             case 1:
-              this.props.navigation.setParams({message: this.state.element.url});
               this.props.navigation.setParams({
-                title: this.state.element.shortDescription
+                message: this.state.element.url,
+              });
+              this.props.navigation.setParams({
+                title: this.state.element.shortDescription,
               });
               break;
             case 3:
-              this.props.navigation.setParams({message: this.state.element.url});
               this.props.navigation.setParams({
-                title: this.state.element.title
+                message: this.state.element.url,
+              });
+              this.props.navigation.setParams({
+                title: this.state.element.title,
               });
               break;
             case 4:
-              this.props.navigation.setParams({message: this.state.element.url});
               this.props.navigation.setParams({
-                title: this.state.element.title
+                message: this.state.element.url,
+              });
+              this.props.navigation.setParams({
+                title: this.state.element.title,
               });
               break;
             case 5:
-              this.props.navigation.setParams({message: this.state.element.embedURL.includes("iframe") ? "https:" + this.state.element.embedURL.match(/src="([^"]+)"/m)[1]: this.state.element.embedURL});
               this.props.navigation.setParams({
-                title: this.state.element.title
+                message: this.state.element.embedURL.includes('iframe')
+                  ? 'https:' +
+                    this.state.element.embedURL.match(/src="([^"]+)"/m)[1]
+                  : this.state.element.embedURL,
+              });
+              this.props.navigation.setParams({
+                title: this.state.element.title,
               });
               break;
             case 7:
-              this.props.navigation.setParams({message: this.state.element.url});
               this.props.navigation.setParams({
-                title: this.state.element.name
+                message: this.state.element.url,
+              });
+              this.props.navigation.setParams({
+                title: this.state.element.name,
               });
               break;
           }
@@ -188,24 +203,53 @@ export default class Content extends Component {
 
   render() {
     if (!this.state.isLoading)
-      if (this.state.element.embedURL != undefined && !this.state.element.embedURL.includes("youtube"))
+      if (this.state.element.embedURL != undefined)
         if (this.state.element.contentType == 5)
-          return <VideoApp url={this.state.element.embedURL.includes("iframe") ? "https:" + this.state.element.embedURL.match(/src="([^"]+)"/m)[1]: this.state.element.embedURL}></VideoApp>;
-        else return <Ppt element={this.state.element}></Ppt>;
+          return (
+            <VideoApp
+              url={
+                this.state.element.embedURL.includes('iframe')
+                  ? 'https:' +
+                    this.state.element.embedURL.match(/src="([^"]+)"/m)[1]
+                  : this.state.element.embedURL
+              }
+            />
+          );
+        else return <Ppt element={this.state.element} />;
       else if (this.state.element)
         return (
           <View style={styles.container}>
             <ScrollView>
               {this.state.element.imageUrl ? (
-                this.state.element.imageUrl.includes("youtube") ? null : 
-                <WebView
-                  style={{height: 300}}
-                  automaticallyAdjustContentInsets={true}
-                  javaScriptEnabled
-                  startInLoadingState={true}
-                  source={{
-                    uri: this.state.element.imageUrl,
-                  }}></WebView>
+                this.state.element.imageUrl.includes('youtube') ? (
+                  <YouTube
+                    ref={this._youTubeRef}
+                    apiKey="AIzaSyDiHaHmwZIm5p1xJyAL4u67OmLbKBuk-lA"
+                    videoId={
+                      this.state.element.imageUrl.match(
+                        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/,
+                      )[7]
+                    }
+                    controls={1}
+                    style={{
+                      alignSelf: 'stretch',
+                      height: PixelRatio.roundToNearestPixel(
+                        Dimensions.get('window').width / (16 / 9),
+                      ),
+                      marginVertical: 20,
+                    }}
+                  />
+                ) : (
+                  <WebView
+                    style={{height: 300}}
+                    automaticallyAdjustContentInsets={true}
+                    javaScriptEnabled
+                    startInLoadingState={true}
+                    source={{
+                      uri: this.state.element.imageUrl,
+                    }}
+                  />
+                )
               ) : null}
               <View>
                 {this.state.element.photo ? (
@@ -249,70 +293,69 @@ export default class Content extends Component {
               </View>
               <View style={styles.renderImage}>
                 {this.state.element.description ? (
-                  
-                    <Fragment>
-                      <Text style={{color: '#2196F3', marginTop: 20}}>
-                        TOPIC DESCRIPTION{'\n'}
-                      </Text>
-                      <HTML
-                        note
-                        style={{marginTop: 5}}
-                        html={this.state.element.description}
-                        ignoredTags={[...IGNORED_TAGS, 'iframe']}
-                        ignoredStyles={['display']}
-                        imagesMaxWidth={Dimensions.get('window').width}
-                        onLinkPress={(e, link) => {
-                          Linking.canOpenURL(link).then(supported => {
-                            if (supported && link) {
-                              Linking.openURL(link);
-                            }
-                          });
-                        }}
-                      />
-                    </Fragment>
+                  <Fragment>
+                    <Text style={{color: '#2196F3', marginTop: 20}}>
+                      TOPIC DESCRIPTION{'\n'}
+                    </Text>
+                    <HTML
+                      note
+                      style={{marginTop: 5}}
+                      html={this.state.element.description}
+                      ignoredTags={[...IGNORED_TAGS, 'iframe']}
+                      ignoredStyles={['display']}
+                      imagesMaxWidth={Dimensions.get('window').width}
+                      onLinkPress={(e, link) => {
+                        Linking.canOpenURL(link).then(supported => {
+                          if (supported && link) {
+                            Linking.openURL(link);
+                          }
+                        });
+                      }}
+                    />
+                  </Fragment>
                 ) : null}
                 {this.state.element.snippet ? (
-                    <Fragment>
-                      <Text style={{color: '#2196F3', marginTop: 20}}>
-                        TOPIC DESCRIPTION{'\n'}
-                      </Text>
-                      <HTML
-                        note
-                        html={this.state.element.snippet}
-                        ignoredTags={[...IGNORED_TAGS, 'iframe']}
-                        ignoredStyles={['display']}
-                        imagesMaxWidth={Dimensions.get('window').width}
-                        onLinkPress={(e, link) => {
-                          Linking.canOpenURL(link).then(supported => {
-                            if (supported && link) {
-                              Linking.openURL(link);
-                            }
-                          });
-                        }}
-                      />
-                    </Fragment>
+                  <Fragment>
+                    <Text style={{color: '#2196F3', marginTop: 20}}>
+                      TOPIC DESCRIPTION{'\n'}
+                    </Text>
+                    <HTML
+                      note
+                      html={this.state.element.snippet}
+                      ignoredTags={[...IGNORED_TAGS, 'iframe']}
+                      ignoredStyles={['display']}
+                      imagesMaxWidth={Dimensions.get('window').width}
+                      onLinkPress={(e, link) => {
+                        Linking.canOpenURL(link).then(supported => {
+                          if (supported && link) {
+                            Linking.openURL(link);
+                          }
+                        });
+                      }}
+                    />
+                  </Fragment>
                 ) : null}
                 {this.state.element.details ? (
-                    <Fragment>
-                      <Text style={{color: '#2196F3', marginTop: 20}}>
-                        TOPIC DESCRIPTION{'\n'}
-                      </Text>
-                      <HTML
-                        note
-                        style={{marginTop: 5}}
-                        html={this.state.element.details}
-                        ignoredTags={[...IGNORED_TAGS, 'iframe']}
-                        ignoredStyles={['display']}
-                        imagesMaxWidth={Dimensions.get('window').width}
-                        onLinkPress={(e, link) => {
-                          Linking.canOpenURL(link).then(supported => {
-                            if (supported && link) {
-                              Linking.openURL(link);
-                            }
-                          });
-                        }}
-                      />
-                    </Fragment>
+                  <Fragment>
+                    <Text style={{color: '#2196F3', marginTop: 20}}>
+                      TOPIC DESCRIPTION{'\n'}
+                    </Text>
+                    <HTML
+                      note
+                      style={{marginTop: 5}}
+                      html={this.state.element.details}
+                      ignoredTags={[...IGNORED_TAGS, 'iframe']}
+                      ignoredStyles={['display']}
+                      imagesMaxWidth={Dimensions.get('window').width}
+                      onLinkPress={(e, link) => {
+                        Linking.canOpenURL(link).then(supported => {
+                          if (supported && link) {
+                            Linking.openURL(link);
+                          }
+                        });
+                      }}
+                    />
+                  </Fragment>
                 ) : null}
               </View>
               <View>
