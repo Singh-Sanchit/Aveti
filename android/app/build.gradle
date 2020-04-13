@@ -24,8 +24,8 @@ android {
         applicationId "com.aveti"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "0.0.21"
+        versionCode 14
+        versionName "0.0.22"
     }
     splits {
         abi {

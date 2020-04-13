@@ -216,40 +216,37 @@ export default class Content extends Component {
             />
           );
         else return <Ppt element={this.state.element} />;
-      else if (this.state.element)
+      else if (this.state.element) {
+        if (
+          this.state.element.imageUrl &&
+          this.state.element.imageUrl.includes('youtube')
+        )
+          return (
+            <WebView
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              startInLoadingState={true}
+              source={{
+                uri: this.state.element.imageUrl
+                  .replace('embed/', 'watch?v=')
+                  .replace('-nocookie', '')
+                  .replace('?enablejsapi=1', ''),
+              }}
+            />
+          );
         return (
           <View style={styles.container}>
             <ScrollView>
               {this.state.element.imageUrl ? (
-                this.state.element.imageUrl.includes('youtube') ? (
-                  <YouTube
-                    ref={this._youTubeRef}
-                    apiKey="AIzaSyDiHaHmwZIm5p1xJyAL4u67OmLbKBuk-lA"
-                    videoId={
-                      this.state.element.imageUrl.match(
-                        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/,
-                      )[7]
-                    }
-                    controls={1}
-                    style={{
-                      alignSelf: 'stretch',
-                      height: PixelRatio.roundToNearestPixel(
-                        Dimensions.get('window').width / (16 / 9),
-                      ),
-                      marginVertical: 20,
-                    }}
-                  />
-                ) : (
-                  <WebView
-                    style={{height: 300}}
-                    automaticallyAdjustContentInsets={true}
-                    javaScriptEnabled
-                    startInLoadingState={true}
-                    source={{
-                      uri: this.state.element.imageUrl,
-                    }}
-                  />
-                )
+                <WebView
+                  style={{height: 300}}
+                  automaticallyAdjustContentInsets={true}
+                  javaScriptEnabled
+                  startInLoadingState={true}
+                  source={{
+                    uri: this.state.element.imageUrl,
+                  }}
+                />
               ) : null}
               <View>
                 {this.state.element.photo ? (
@@ -561,7 +558,7 @@ export default class Content extends Component {
             </ScrollView>
           </View>
         );
-      else
+      } else
         return (
           <View style={styles.container}>
             <Text
